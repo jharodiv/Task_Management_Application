@@ -51,7 +51,9 @@ npm install
 Create a `.env` file inside `backend`:
 
 ```env
-DATABASE_URL="postgresql://USERNAME:PASSWORD@HOST:PORT/DATABASE"
+PORT = 3000
+DATABASE_URL="postgresql://postgres:dracarys@localhost:5432/task_api"
+FRONTEND_URL=http://localhost:5173
 ```
 
 Generate Prisma Client and set up the database:
@@ -87,7 +89,7 @@ npm install
 Create a `.env` file inside `frontend`:
 
 ```env
-VITE_BACKEND_URL=http://localhost:3000
+VITE_API_URL=http://localhost:3000/api
 ```
 
 Start the frontend:

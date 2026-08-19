@@ -16,7 +16,7 @@ import type {
     CreateTaskInput,
     Task,
     UpdateTaskInput,
-    TaskFilter
+    TaskFilter,
 } from "@type/tasks/tasks.type";
 
 export function useTasks() {
@@ -48,14 +48,26 @@ export function useTasks() {
 
     const createTask = useCallback(
         async (data: CreateTaskInput) => {
-            const task = await createTaskRequest(data);
+            try {
+                setError(null);
 
-            setTasks((current) => [
-                task,
-                ...current,
-            ]);
+                const task = await createTaskRequest(data);
 
-            return task;
+                setTasks((current) => [
+                    task,
+                    ...current,
+                ]);
+
+                return task;
+            } catch (error) {
+                setError(
+                    error instanceof Error
+                        ? error.message
+                        : "Failed to create task"
+                );
+
+                throw error;
+            }
         },
         []
     );
@@ -65,31 +77,55 @@ export function useTasks() {
             id: string,
             data: UpdateTaskInput
         ) => {
-            const updatedTask =
-                await updateTaskRequest(id, data);
+            try {
+                setError(null);
 
-            setTasks((current) =>
-                current.map((task) =>
-                    task.id === id
-                        ? updatedTask
-                        : task
-                )
-            );
+                const updatedTask =
+                    await updateTaskRequest(id, data);
 
-            return updatedTask;
+                setTasks((current) =>
+                    current.map((task) =>
+                        task.id === id
+                            ? updatedTask
+                            : task
+                    )
+                );
+
+                return updatedTask;
+            } catch (error) {
+                setError(
+                    error instanceof Error
+                        ? error.message
+                        : "Failed to update task"
+                );
+
+                throw error;
+            }
         },
         []
     );
 
     const deleteTask = useCallback(
         async (id: string) => {
-            await deleteTaskRequest(id);
+            try {
+                setError(null);
 
-            setTasks((current) =>
-                current.filter(
-                    (task) => task.id !== id
-                )
-            );
+                await deleteTaskRequest(id);
+
+                setTasks((current) =>
+                    current.filter(
+                        (task) => task.id !== id
+                    )
+                );
+            } catch (error) {
+                setError(
+                    error instanceof Error
+                        ? error.message
+                        : "Failed to delete task"
+                );
+
+                throw error;
+            }
         },
         []
     );
@@ -99,7 +135,9 @@ export function useTasks() {
 
         return tasks.filter((task) => {
             const matchesSearch =
-                task.title.toLowerCase().includes(searchValue) ||
+                task.title
+                    .toLowerCase()
+                    .includes(searchValue) ||
                 task.description
                     ?.toLowerCase()
                     .includes(searchValue);

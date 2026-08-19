@@ -1,4 +1,4 @@
-export const API_URL = import.meta.env.VITE_BACKEND_URL;
+export const API_URL = import.meta.env.VITE_API_URL;
 
 export async function apiRequest<T>(
     url: string,
@@ -15,7 +15,7 @@ export async function apiRequest<T>(
             );
         }
 
-        return result.data; 
+        return result.data;
     } catch (error) {
         if (error instanceof Error) {
             throw error;
